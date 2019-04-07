@@ -6,11 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="LabAssiAsseProjectV02" />
+        <module name="AlexLouisa" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="LabAssiAsseProjectV02" target="1.6" />
-    </bytecodeTargetLevel>
   </component>
 </project>
