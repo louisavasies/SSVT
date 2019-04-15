@@ -198,11 +198,82 @@ public class AppTest {
         TemaValidator temaValidator = new TemaValidator();
         TemaXMLRepo temaXMLRepo = new TemaXMLRepo("fisiere/TestTeme.xml");
 
-        Service service = new Service(null, null, temaXMLRepo, temaValidator, null, null);
+        Service service;
 
-        Tema tema = new Tema("aaa", "aaa", 3, 3);
-        tema.setID("aaa");
-        service.addTema(tema);
-        service.deleteTema(tema.getNrTema());
+        //= Subtest 1 - Fail because ID is null or empty ======================================
+        service = new Service(null, null, temaXMLRepo, temaValidator, null, null);
+
+        try {
+            service.addTema(new Tema(null, "aaa", 3, 3));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+
+        try {
+            service.addTema(new Tema("", "aaa", 3, 3));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+        //=====================================================================================
+
+        //= Subtest 2 - Fail because description is empty =====================================
+        service = new Service(null, null, temaXMLRepo, temaValidator, null, null);
+
+        try {
+            service.addTema(new Tema("aaa", "", 3, 3));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+        //=====================================================================================
+
+        //= Subtest 3 - Fail because deadline is not good =====================================
+        service = new Service(null, null, temaXMLRepo, temaValidator, null, null);
+
+        try {
+            service.addTema(new Tema("aaa", "aaa", 0, 3));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+
+        try {
+            service.addTema(new Tema("aaa", "aaa", 15, 3));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+        //=====================================================================================
+
+        //= Subtest 4 - Fail because primire is not good ======================================
+        service = new Service(null, null, temaXMLRepo, temaValidator, null, null);
+
+        try {
+            service.addTema(new Tema("aaa", "aaa", 3, 0));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+
+        try {
+            service.addTema(new Tema("aaa", "aaa", 3, 15));
+            throw new RuntimeException("This should go on the catch block boss");
+        } catch (ValidationException ignored) {}
+        //=====================================================================================
+
+        //= Subtest 5 - Success ===============================================================
+        temaXMLRepo = new TemaXMLRepo("fisiere/TestTeme_1.xml");
+        service = new Service(null, null, temaXMLRepo, temaValidator, null, null);
+
+        Tema st6_tema = new Tema("aaa", "aaa", 3, 3);
+
+        try {
+            service.addTema(st6_tema);
+        } catch (ValidationException ignored) {
+            throw new RuntimeException("This should go on the catch block boss");
+        }
+
+        int size = 0;
+        for (Tema t : service.getAllTeme()) {
+            ++size;
+
+            assert st6_tema.getID().equals(t.getID());
+            assert st6_tema.getDescriere().equals(t.getDescriere());
+            assert st6_tema.getDeadline() == t.getDeadline();
+            assert st6_tema.getPrimire() == t.getPrimire();
+        }
+
+        assert size == 1;
+        //=====================================================================================
     }
 }
